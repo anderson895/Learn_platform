@@ -1,15 +1,23 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
-import PagePlaceholder from "@/components/ui/PagePlaceholder";
+import GradingQueue from "@/components/assessments/GradingQueue";
+import PageLoading from "@/components/ui/PageLoading";
+import { requireUser } from "@/lib/auth/session";
+import { AssessmentService } from "@/services/AssessmentService";
 
 export const metadata: Metadata = { title: "Submissions" };
 
+/** Pag-grade ng coding exercises (View Activity Feedback, Fig. 5). */
 export default function SubmissionsPage() {
   return (
-    <PagePlaceholder
-      sprint={4}
-      title="Submissions & Grading"
-      description="Mano-manong pag-grade ng Coding Exercises/Assignments (walang automatic grading ng code)."
-      items={["Listahan ng mga submission na naghihintay ng grade", "Pagtingin ng isinulat na Java code", "Paglagay ng score at feedback"]}
-    />
+    <Suspense fallback={<PageLoading />}>
+      <SubmissionsContent />
+    </Suspense>
   );
+}
+
+async function SubmissionsContent() {
+  await requireUser(["admin"]);
+  const rows = await new AssessmentService().gradingQueue();
+  return <GradingQueue rows={rows} />;
 }

@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useActionState, useState } from "react";
 import NextLink from "next/link";
 import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Chip from "@mui/material/Chip";
+import CircularProgress from "@mui/material/CircularProgress";
 import Divider from "@mui/material/Divider";
 import InputAdornment from "@mui/material/InputAdornment";
 import Link from "@mui/material/Link";
@@ -22,25 +23,23 @@ import LockOutlined from "@mui/icons-material/LockOutlined";
 import PersonOutlined from "@mui/icons-material/PersonOutlined";
 import SchoolOutlined from "@mui/icons-material/SchoolOutlined";
 import CastForEducationOutlined from "@mui/icons-material/CastForEducationOutlined";
+import { loginAction } from "@/app/(auth)/actions";
+import { initialFormState } from "@/lib/forms";
 
 type LoginRole = "student" | "educator";
 
 const fieldLabelSx = { fontSize: 11, fontWeight: 600, letterSpacing: "0.06em", color: "text.secondary", mb: 0.75 };
 
 export default function LoginForm() {
-  const [role, setRole] = useState<LoginRole>("student");
-  const [notice, setNotice] = useState<string | null>(null);
-
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    // Sprint 1: Firebase Authentication sign-in → session cookie → redirect ayon sa role.
-    setNotice("Login is not connected yet. Firebase Authentication will be added in Sprint 1.");
-  }
+  const [state, formAction, pending] = useActionState(loginAction, initialFormState);
+  const [role, setRole] = useState<LoginRole>((state.values?.portal as LoginRole) || "student");
+  const errors = state.fieldErrors ?? {};
 
   return (
     <Paper
       component="form"
-      onSubmit={handleSubmit}
+      action={formAction}
+      key={state.attempt}
       sx={{ width: "100%", maxWidth: 380, p: { xs: 3, sm: 3.5 }, borderRadius: "14px", border: 1, borderColor: "divider" }}
     >
       <Stack direction="row" spacing={1} sx={{ mb: 3 }}>
@@ -79,13 +78,18 @@ export default function LoginForm() {
         ))}
       </ToggleButtonGroup>
 
-      <Typography component="label" htmlFor="username" sx={{ ...fieldLabelSx, display: "block" }}>
+      <input type="hidden" name="portal" value={role} />
+
+      <Typography component="label" htmlFor="identifier" sx={{ ...fieldLabelSx, display: "block" }}>
         USERNAME / EMAIL
       </Typography>
       <TextField
-        id="username"
-        name="username"
+        id="identifier"
+        name="identifier"
         autoComplete="username"
+        defaultValue={state.values?.identifier ?? ""}
+        error={Boolean(errors.identifier)}
+        helperText={errors.identifier}
         required
         fullWidth
         size="small"
@@ -109,6 +113,8 @@ export default function LoginForm() {
         name="password"
         type="password"
         autoComplete="current-password"
+        error={Boolean(errors.password)}
+        helperText={errors.password}
         required
         fullWidth
         size="small"
@@ -124,15 +130,23 @@ export default function LoginForm() {
         }}
       />
 
-      <Button type="submit" fullWidth variant="contained" color="secondary" endIcon={<ChevronRight />} sx={{ py: 1.1 }}>
-        Log In Securely
-      </Button>
-
-      {notice && (
-        <Alert severity="info" sx={{ mt: 2 }}>
-          {notice}
+      {state.status === "error" && state.message && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {state.message}
         </Alert>
       )}
+
+      <Button
+        type="submit"
+        fullWidth
+        variant="contained"
+        color="secondary"
+        disabled={pending}
+        endIcon={pending ? <CircularProgress size={16} color="inherit" /> : <ChevronRight />}
+        sx={{ py: 1.1 }}
+      >
+        {pending ? "Signing in..." : "Log In Securely"}
+      </Button>
 
       <Divider sx={{ my: 2.5 }} />
       <Typography variant="caption" color="text.secondary" component="p" align="center">

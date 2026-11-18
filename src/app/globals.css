@@ -7,3 +7,13 @@ a {
   color: inherit;
   text-decoration: none;
 }
+
+/* Print / Save as PDF ng Reports: itago ang navigation at mga button. */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: #fff !important;
+  }
+}

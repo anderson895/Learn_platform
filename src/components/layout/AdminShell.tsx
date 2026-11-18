@@ -4,6 +4,7 @@ import { useState } from "react";
 import NextLink from "next/link";
 import { usePathname } from "next/navigation";
 import Avatar from "@mui/material/Avatar";
+import Badge from "@mui/material/Badge";
 import Box from "@mui/material/Box";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
 import Drawer from "@mui/material/Drawer";
@@ -32,7 +33,9 @@ import SettingsOutlined from "@mui/icons-material/SettingsOutlined";
 import SpaceDashboardOutlined from "@mui/icons-material/SpaceDashboardOutlined";
 import VideocamOutlined from "@mui/icons-material/VideocamOutlined";
 import ViewListOutlined from "@mui/icons-material/ViewListOutlined";
+import { logoutAction } from "@/app/(auth)/actions";
 import BrandLogo from "@/components/brand/BrandLogo";
+import type { Viewer } from "@/lib/auth/session";
 import { brand } from "@/theme/tokens";
 
 type NavItem = { label: string; href: string; icon: SvgIconComponent };
@@ -86,7 +89,7 @@ function NavLink({ item, active, onClick }: { item: NavItem; active: boolean; on
   );
 }
 
-export default function AdminShell({ children }: { children: React.ReactNode }) {
+export default function AdminShell({ viewer, pendingSubmissions = 0, children }: { viewer: Viewer; pendingSubmissions?: number; children: React.ReactNode }) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const close = () => setMobileOpen(false);
@@ -118,10 +121,21 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
           ))}
         </List>
       </Box>
-      <List disablePadding sx={{ px: 1, py: 1, borderTop: `1px solid ${brand.navyBorder}` }}>
+      <List disablePadding sx={{ px: 1, pt: 1, borderTop: `1px solid ${brand.navyBorder}` }}>
         <NavLink item={{ label: "View Syllabus Board", href: "/learn", icon: ViewListOutlined }} active={false} />
-        <NavLink item={{ label: "Sign Out", href: "/login", icon: LogoutOutlined }} active={false} />
       </List>
+      <Box component="form" action={logoutAction} sx={{ px: 1, pb: 1 }}>
+        <ListItemButton
+          component="button"
+          type="submit"
+          sx={{ width: "100%", borderRadius: "8px", py: 0.75, color: "#CBD5E1", "&:hover": { bgcolor: "rgba(255,255,255,0.05)" } }}
+        >
+          <ListItemIcon sx={{ minWidth: 32, color: "inherit" }}>
+            <LogoutOutlined sx={{ fontSize: 18 }} />
+          </ListItemIcon>
+          <ListItemText primary="Sign Out" slotProps={{ primary: { sx: { fontSize: 13.5 } } }} />
+        </ListItemButton>
+      </Box>
     </Box>
   );
 
@@ -129,7 +143,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
 
   return (
     <Box sx={{ display: "flex", minHeight: "100vh" }}>
-      <Box component="nav" sx={{ width: { md: DRAWER_WIDTH }, flexShrink: { md: 0 } }}>
+      <Box component="nav" className="no-print" sx={{ width: { md: DRAWER_WIDTH }, flexShrink: { md: 0 } }}>
         <Drawer
           variant="temporary"
           open={mobileOpen}
@@ -147,6 +161,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
       <Box sx={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
         <Box
           component="header"
+          className="no-print"
           sx={{
             height: 56,
             px: { xs: 1, md: 3 },
@@ -173,13 +188,26 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
             </Typography>
           </Breadcrumbs>
           <Box sx={{ flex: 1 }} />
-          <IconButton size="small" aria-label="Notifications">
-            <NotificationsNoneOutlined fontSize="small" />
+          <IconButton
+            size="small"
+            component={NextLink}
+            href="/admin/submissions"
+            aria-label={pendingSubmissions ? `${pendingSubmissions} submissions waiting for a grade` : "Notifications"}
+          >
+            <Badge badgeContent={pendingSubmissions} color="error" max={99}>
+              <NotificationsNoneOutlined fontSize="small" />
+            </Badge>
           </IconButton>
           <IconButton size="small" aria-label="Settings" component={NextLink} href="/admin/settings">
             <SettingsOutlined fontSize="small" />
           </IconButton>
-          <Avatar sx={{ width: 30, height: 30, ml: 0.5, bgcolor: "primary.main", fontSize: 13 }}>A</Avatar>
+          <Avatar sx={{ width: 30, height: 30, ml: 0.5, bgcolor: "primary.main", fontSize: 13 }}>
+            {viewer.displayName.charAt(0).toUpperCase()}
+          </Avatar>
+          <Box sx={{ display: { xs: "none", sm: "block" }, lineHeight: 1.1 }}>
+            <Typography sx={{ fontSize: 13, fontWeight: 600 }}>{viewer.displayName}</Typography>
+            <Typography sx={{ fontSize: 11, color: "text.secondary" }}>Educator</Typography>
+          </Box>
         </Box>
         <Box component="main" sx={{ flex: 1, p: { xs: 2, md: 3 } }}>
           {children}

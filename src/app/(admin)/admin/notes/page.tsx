@@ -1,21 +1,30 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
-import PagePlaceholder from "@/components/ui/PagePlaceholder";
+import NotesRepository from "@/components/notes/NotesRepository";
+import PageLoading from "@/components/ui/PageLoading";
+import { requireUser } from "@/lib/auth/session";
+import { ContentService } from "@/services/ContentService";
 
 export const metadata: Metadata = { title: "Notes Repository" };
 
+/** Notes Repository (Fig. 10). */
 export default function NotesPage() {
   return (
-    <PagePlaceholder
-      sprint={2}
-      figure="Fig. 10"
-      title="Notes Repository"
-      description="Lecture Script Editor para sa lesson content."
-      items={[
-        "Markdown editor na may Save (draft) at Publish",
-        "Saved Notes list na may published/draft na status",
-        "Code Snippets (Java)",
-        "Pag-link ng note sa isang lesson",
-      ]}
+    <Suspense fallback={<PageLoading rows={6} />}>
+      <NotesContent />
+    </Suspense>
+  );
+}
+
+async function NotesContent() {
+  await requireUser(["admin"]);
+  const content = new ContentService();
+  const [notes, lessons, snippets] = await Promise.all([content.listNotes(), content.listLessons(), content.listSnippets()]);
+  return (
+    <NotesRepository
+      notes={notes.map((note) => note.toDTO())}
+      lessons={lessons.map((lesson) => ({ id: lesson.id, label: `${lesson.chapterLabel} · ${lesson.title}` }))}
+      snippets={snippets.map(({ id, filename, code }) => ({ id, filename, code }))}
     />
   );
 }

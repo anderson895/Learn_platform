@@ -1,21 +1,25 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
-import PagePlaceholder from "@/components/ui/PagePlaceholder";
+import SyllabusBoard from "@/components/progress/SyllabusBoard";
+import PageLoading from "@/components/ui/PageLoading";
+import { requireUser } from "@/lib/auth/session";
+import { ProgressService } from "@/services/ProgressService";
 
 export const metadata: Metadata = { title: "Syllabus Board" };
 
-export default function SyllabusBoardPage() {
+type Props = { searchParams: Promise<{ locked?: string }> };
+
+/** Syllabus Progress Board (Fig. 15). */
+export default function SyllabusBoardPage({ searchParams }: Props) {
   return (
-    <PagePlaceholder
-      sprint={6}
-      figure="Fig. 15"
-      title="Syllabus Progress Board"
-      description="Color-coded na progress sa bawat chapter (read-only para sa student)."
-      items={[
-        "Table: #, Chapter, Lesson Title, Topic, Media, Quiz, Status",
-        "Mga kulay: Not Started (gray), In Progress (amber), Completed (green), Locked",
-        "Overall progress bar (hal. 2/10)",
-        "Pag-click sa lesson → Student Workspace (Fig. 13, Sprint 4)",
-      ]}
-    />
+    <Suspense fallback={<PageLoading rows={6} />}>
+      <BoardContent searchParams={searchParams} />
+    </Suspense>
   );
+}
+
+async function BoardContent({ searchParams }: Props) {
+  const user = await requireUser(["student", "admin"]);
+  const [{ locked }, board] = await Promise.all([searchParams, new ProgressService().board(user.id)]);
+  return <SyllabusBoard board={board} locked={locked === "1"} preview={user.role !== "student"} />;
 }
