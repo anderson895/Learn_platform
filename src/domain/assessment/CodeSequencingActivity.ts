@@ -26,7 +26,10 @@ export class CodeSequencingActivity extends Assessment<string[], SequencingKey, 
   }
 
   evaluate(answer: string[], key: SequencingKey): SequencingResult {
-    const positions = key.correctOrder.map((blockId, index) => answer[index] === blockId);
+    // Kinukumpara ang code, hindi ang ID: kapag may magkaparehong linya (hal. dalawang "}"),
+    // tama pa rin kahit alin sa dalawa ang mauna.
+    const codeOf = new Map(this.blocks.map((block) => [block.id, block.code]));
+    const positions = key.correctOrder.map((blockId, index) => answer[index] !== undefined && codeOf.get(answer[index]) === codeOf.get(blockId));
     const correctCount = positions.filter(Boolean).length;
     const total = key.correctOrder.length;
     const correct = answer.length === total && correctCount === total;

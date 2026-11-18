@@ -50,6 +50,15 @@ describe("CodeSequencingActivity", () => {
     expect(result.feedback).toContain("1 of 3");
   });
 
+  it("evaluate: tama pa rin kahit pinagpalit ang dalawang magkaparehong linya (hal. dalawang '}')", () => {
+    let next = 0;
+    const { blocks, key } = CodeSequencingActivity.fromSolution("public class Main {\nvoid run() {\n}\n}", () => `d${++next}`);
+    const activity = new CodeSequencingActivity("act-2", "lesson-1", "Braces", "", blocks, 2);
+    const [first, second, brace1, brace2] = key.correctOrder;
+    expect(activity.evaluate([first, second, brace2, brace1], key).correct).toBe(true);
+    expect(activity.evaluate([second, first, brace1, brace2], key).correct).toBe(false);
+  });
+
   it("evaluate: kulang ang mga block na ginamit", () => {
     const { activity, key } = sequencing();
     const result = activity.evaluate([key.correctOrder[0]], key);

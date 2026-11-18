@@ -72,7 +72,7 @@ export default function TopNavShell({
                 href={link.href}
                 size="small"
                 color={active ? "primary" : "inherit"}
-                sx={{ fontWeight: active ? 700 : 500, color: active ? undefined : "text.secondary" }}
+                sx={{ fontWeight: active ? 700 : 500, color: active ? undefined : "text.secondary", mr: link.badge ? 1.5 : 0 }}
               >
                 {link.badge ? (
                   <Badge badgeContent={link.badge} color="error" max={9} sx={{ "& .MuiBadge-badge": { right: -10, top: 2 } }}>
