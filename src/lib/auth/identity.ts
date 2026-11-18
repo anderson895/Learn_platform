@@ -12,7 +12,10 @@ export async function signInWithPassword(email: string, password: string): Promi
   const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
   if (!apiKey) throw new Error("Kulang ang NEXT_PUBLIC_FIREBASE_API_KEY sa .env.local.");
 
-  const response = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`, {
+  // Lokal na testing: kapag naka-set ang FIREBASE_AUTH_EMULATOR_HOST, sa Firebase Auth Emulator ito tatawag.
+  const emulator = process.env.FIREBASE_AUTH_EMULATOR_HOST;
+  const base = emulator ? `http://${emulator}/identitytoolkit.googleapis.com` : "https://identitytoolkit.googleapis.com";
+  const response = await fetch(`${base}/v1/accounts:signInWithPassword?key=${apiKey}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password, returnSecureToken: true }),

@@ -1,4 +1,6 @@
 import { describe, expect, it } from "vitest";
+import { defaultQuestionnaire } from "@/domain/evaluation/Pieces";
+import { piecesAnswerSchema, questionnaireSchema } from "./evaluation";
 import { activitySchema, exerciseSchema, gradeSchema, quizSchema } from "./assessment";
 import { lessonSchema, noteSchema, snippetSchema } from "./content";
 import { changePasswordSchema, fieldErrorsOf, formValues, loginSchema, registrationSchema, studentDetailsSchema } from "./student";
@@ -156,5 +158,39 @@ describe("assessment schemas (Assessment Builder)", () => {
   it("grade: bawal ang negatibong score", () => {
     expect(gradeSchema.safeParse({ score: "-5", feedback: "" }).success).toBe(false);
     expect(gradeSchema.parse({ score: "90", feedback: "Good" }).score).toBe(90);
+  });
+});
+
+describe("PIECES questionnaireSchema at piecesAnswerSchema", () => {
+  const base = () => defaultQuestionnaire();
+
+  it("tinatanggap ang default na questionnaire", () => {
+    expect(questionnaireSchema.safeParse(base()).success).toBe(true);
+  });
+
+  it("hindi puwedeng mawala o magpalit ng ayos ang anim na criterion", () => {
+    const swapped = base();
+    [swapped.criteria[0], swapped.criteria[1]] = [swapped.criteria[1], swapped.criteria[0]];
+    expect(questionnaireSchema.safeParse(swapped).success).toBe(false);
+    expect(questionnaireSchema.safeParse({ ...base(), criteria: base().criteria.slice(1) }).success).toBe(false);
+  });
+
+  it("bawal ang walang tanong, blangkong tanong at dobleng ID", () => {
+    const empty = base();
+    empty.criteria[2].items = [];
+    expect(questionnaireSchema.safeParse(empty).success).toBe(false);
+    const blank = base();
+    blank.criteria[0].items[0].text = "   ";
+    expect(questionnaireSchema.safeParse(blank).success).toBe(false);
+    const duplicate = base();
+    duplicate.criteria[1].items[0].id = duplicate.criteria[0].items[0].id;
+    expect(questionnaireSchema.safeParse(duplicate).success).toBe(false);
+  });
+
+  it("sagot: 1 hanggang 5 lang, buong numero", () => {
+    expect(piecesAnswerSchema.safeParse({ answers: { per1: 5 } }).success).toBe(true);
+    expect(piecesAnswerSchema.safeParse({ answers: { per1: 0 } }).success).toBe(false);
+    expect(piecesAnswerSchema.safeParse({ answers: { per1: 3.5 } }).success).toBe(false);
+    expect(piecesAnswerSchema.parse({ answers: {} }).comment).toBe("");
   });
 });

@@ -7,7 +7,7 @@ import { AuditLogRepository } from "@/repositories/AuditLogRepository";
 /** Mga collection na isasama sa backup. */
 const BACKUP_COLLECTIONS = [
   "accounts", "students", "subjects", "syllabi", "lessons", "notes", "codeSnippets", "media",
-  "activities", "codingExercises", "quizzes", "answerKeys", "submissions", "announcements", "settings", "auditLogs",
+  "activities", "codingExercises", "quizzes", "answerKeys", "submissions", "announcements", "settings", "auditLogs", "piecesResponses",
 ] as const;
 
 async function deleteRefs(refs: DocumentReference[]): Promise<number> {
@@ -71,12 +71,18 @@ export class MaintenanceService {
     return { students: ids.length, progress, submissions };
   }
 
-  /** Tuluyang binubura ang student (Auth user, account, profile, progress at submissions). */
+  /** Tuluyang binubura ang student (Auth user, account, profile, progress, submissions at PIECES response). */
   async deleteStudentAccount(uid: string, actorUid: string): Promise<void> {
     const [id] = await this.studentIds(uid);
     const db = getAdminDb();
     const refs = await this.progressAndSubmissionRefs(id);
-    await deleteRefs([...refs.progress, ...refs.submissions, db.collection("accounts").doc(id), db.collection("students").doc(id)]);
+    await deleteRefs([
+      ...refs.progress,
+      ...refs.submissions,
+      db.collection("piecesResponses").doc(id),
+      db.collection("accounts").doc(id),
+      db.collection("students").doc(id),
+    ]);
     await getAdminAuth()
       .deleteUser(id)
       .catch((error: { code?: string }) => {

@@ -44,8 +44,26 @@ Nasa tabi ng code ang mga test (`*.test.ts`). Hindi tumatawag ang mga ito sa tot
 | `services/AssessmentService.test.ts` | Quiz timer at grading, pagtago ng sagot, admin preview, Code Sequencing, pag-grade (fake repositories) |
 | `services/AccountService.test.ts` | My Account: password bago magpalit ng email, bawal ang kaparehong username/email |
 | `services/ProgressService.test.ts` | Pinakamataas na score, unlock, Mark as done, Progress Board (fake Firestore) |
+| `domain/evaluation/Pieces.test.ts` | PIECES: weighted mean, verbal interpretation (4.21–5.00 …), Students vs Faculty |
+| `services/EvaluationService.test.ts` | PIECES: sarado/bukas, kulang na sagot, pagpalit ng sagot, CSV na walang pangalan |
 
 Test data factories: `src/test/factories.ts`. Config: `vitest.config.mts`.
+
+## Pagsubok gamit ang Firebase Emulator (hindi ginagalaw ang totoong data)
+
+Kailangan ng Java 11+ at Firebase CLI. Sa unang terminal:
+
+```bash
+firebase emulators:start --only auth,firestore
+```
+
+Sa pangalawang terminal (PowerShell):
+
+```powershell
+$env:FIRESTORE_EMULATOR_HOST="127.0.0.1:8080"; $env:FIREBASE_AUTH_EMULATOR_HOST="127.0.0.1:9099"; npm run dev
+```
+
+Kapag naka-set ang dalawang variable, sa emulator pupunta ang lahat ng Firestore at Auth (pati login). Gumawa ng test admin sa emulator gamit ang `node scripts/create-admin.mjs` sa parehong terminal. Nabubura ang emulator data kapag pinatay ito.
 
 ## Admin account
 
@@ -65,9 +83,16 @@ Isang beses lang ipapakita ang password, kaya i-save ito agad.
 
 | Role | Mga page |
 |---|---|
-| Admin (Educator) | Dashboard, AV Studio, Notes, Syllabus Builder, Class Roster, Student Accounts, Assessments, Submissions, Reports, Settings, My Account |
-| Student | Syllabus Board (`/learn`), Workspace (`/learn/[id]`), Syntax Reviewer, Quiz, Achievements, Announcements, Profile |
-| Chairman | Oversight (read-only na reports) |
+| Admin (Educator) | Dashboard, AV Studio, Notes, Syllabus Builder, Class Roster, Student Accounts, Assessments, Submissions, Reports, PIECES Evaluation, Settings, My Account |
+| Student | Syllabus Board (`/learn`), Workspace (`/learn/[id]`), Syntax Reviewer, Quiz, Achievements, Announcements, Profile, Evaluation (`/evaluation`, kapag bukas) |
+| Chairman | Oversight (read-only na reports), Evaluation (kapag bukas) |
+
+**PIECES Evaluation (Objective 3):**
+- **Admin → PIECES Evaluation → Questionnaire:** i-edit ang instructions at mga tanong (6 na criterion, 1–10 tanong bawat isa), at buksan o isara ang pagsagot. Sarado ito sa simula.
+- Kapag bukas, may **Evaluation** link sa menu ng students at faculty (educator at chairman). Isang sagot bawat account (5-point Likert), at puwede itong baguhin hangga't bukas.
+- **Results:** weighted mean at verbal interpretation bawat tanong, criterion at overall (Students, Faculty, Overall), mga komento, **Summary CSV**, **Raw responses CSV** (R1, R2…, walang pangalan) at Print/PDF.
+- **Respondents:** sino na ang sumagot, at **Clear all responses** pagkatapos mag-test.
+- Interpretation: 4.21–5.00 Highly Acceptable · 3.41–4.20 Very Acceptable · 2.61–3.40 Moderately Acceptable · 1.81–2.60 Slightly Acceptable · 1.00–1.80 Not Acceptable.
 
 **Settings (para sa Cloudinary free tier at testing):**
 - **Storage:** credits na nagamit (may babala kapag napupuno), lahat ng file sa Cloudinary, at pagbura ng mga hindi ginagamit o ng mga sample.

@@ -21,6 +21,7 @@ import AssessmentOutlined from "@mui/icons-material/AssessmentOutlined";
 import AssignmentTurnedInOutlined from "@mui/icons-material/AssignmentTurnedInOutlined";
 import ChevronRight from "@mui/icons-material/ChevronRight";
 import DescriptionOutlined from "@mui/icons-material/DescriptionOutlined";
+import FactCheckOutlined from "@mui/icons-material/FactCheckOutlined";
 import LogoutOutlined from "@mui/icons-material/LogoutOutlined";
 import ManageAccountsOutlined from "@mui/icons-material/ManageAccountsOutlined";
 import MenuBookOutlined from "@mui/icons-material/MenuBookOutlined";
@@ -55,6 +56,7 @@ const managementNav: NavItem[] = [
   { label: "Assessments", href: "/admin/assessments", icon: QuizOutlined },
   { label: "Submissions", href: "/admin/submissions", icon: AssignmentTurnedInOutlined },
   { label: "Reports", href: "/admin/reports", icon: AssessmentOutlined },
+  { label: "PIECES Evaluation", href: "/admin/evaluation", icon: FactCheckOutlined },
   { label: "Settings", href: "/admin/settings", icon: SettingsOutlined },
 ];
 
