@@ -23,6 +23,11 @@ export function initFirebase() {
   return { projectId, auth: getAuth(app), db: getFirestore(app) };
 }
 
+/** Username mula sa email (hal. "Admin.Main@x.com" → "admin.main"), ayon sa patakaran ng app. */
+export function toUsername(email) {
+  return email.split("@")[0].toLowerCase().replace(/[^a-z0-9._]/g, "").slice(0, 30) || "user";
+}
+
 /** Hinahanap ang user gamit ang email. `null` kapag wala. */
 export async function findUserByEmail(auth, email) {
   try {
@@ -38,14 +43,15 @@ export async function findUserByEmail(auth, email) {
  * - custom claim na { role }, na binabasa ng server
  * - `accounts/{uid}` sa Firestore (username, email, role, status, createdAt)
  */
-export async function assignRole({ auth, db }, user, role, username) {
+export async function assignRole({ auth, db }, user, role, displayName) {
   await auth.setCustomUserClaims(user.uid, { ...(user.customClaims ?? {}), role });
 
   const ref = db.collection("accounts").doc(user.uid);
   const existing = await ref.get();
   await ref.set(
     {
-      username: existing.get("username") ?? username ?? user.displayName ?? user.email.split("@")[0],
+      username: existing.get("username") ?? toUsername(user.email),
+      displayName: existing.get("displayName") || displayName || user.displayName || "",
       email: user.email,
       role,
       status: "active",

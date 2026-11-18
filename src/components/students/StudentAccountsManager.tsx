@@ -105,6 +105,8 @@ function EditStudentDialog({ row, onClose }: { row: StudentRow; onClose: () => v
       studentNumber: row.studentNumber,
       course: row.course,
       yearLevel: row.yearLevel,
+      username: row.username,
+      email: row.email,
     },
   });
   return (
@@ -117,9 +119,9 @@ function EditStudentDialog({ row, onClose }: { row: StudentRow; onClose: () => v
               {state.message}
             </Alert>
           )}
-          <StudentFields values={state.values} errors={state.fieldErrors} withAccount={false} />
+          <StudentFields values={state.values} errors={state.fieldErrors} />
           <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 1.5 }}>
-            Username: {row.username} · Email: {row.email}
+            Changing the email also changes the email the student uses to log in.
           </Typography>
         </DialogContent>
         <DialogActions>

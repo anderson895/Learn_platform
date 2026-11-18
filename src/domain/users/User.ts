@@ -5,6 +5,8 @@ export type AccountStatus = "active" | "inactive";
 export interface AccountProps {
   username: string;
   email: string;
+  /** Pangalang ipinapakita para sa admin at chairman (hal. "Prof. Pedro Santos"). Ang student ay may pangalan sa `students`. */
+  displayName?: string;
   status: AccountStatus;
   createdAt: Date;
 }
@@ -32,6 +34,11 @@ export abstract class User {
 
   get email(): string {
     return this.props.email;
+  }
+
+  /** Ang display name, o ang username kapag wala. */
+  get displayName(): string {
+    return this.props.displayName?.trim() || this.props.username;
   }
 
   get createdAt(): Date {

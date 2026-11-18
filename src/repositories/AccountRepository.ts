@@ -7,6 +7,7 @@ import { BaseRepository } from "./BaseRepository";
 export interface AccountDocument {
   username: string;
   email: string;
+  displayName?: string;
   role: Role;
   status: AccountStatus;
   createdAt: Timestamp;
@@ -19,6 +20,7 @@ export class AccountRepository extends BaseRepository<User, AccountDocument> {
     return createUser(id, data.role, {
       username: data.username,
       email: data.email,
+      displayName: data.displayName ?? "",
       status: data.status,
       createdAt: data.createdAt.toDate(),
     });
@@ -37,6 +39,7 @@ export class AccountRepository extends BaseRepository<User, AccountDocument> {
     return {
       username: props.username,
       email: props.email,
+      displayName: props.displayName ?? "",
       role: user.role,
       status: props.status,
       createdAt: Timestamp.fromDate(props.createdAt),

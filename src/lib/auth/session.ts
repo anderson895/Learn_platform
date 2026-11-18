@@ -56,7 +56,7 @@ export type Viewer = { uid: string; role: Role; username: string; email: string;
 
 /** Impormasyong ipinapakita sa header (pangalan at role). Ligtas itong ipasa sa Client Components. */
 export const getViewer = cache(async (user: User): Promise<Viewer> => {
-  let displayName = user.username;
+  let displayName = user.displayName;
   if (user.role === "student") {
     const profile = await new StudentProfileRepository().findById(user.id);
     if (profile) displayName = profile.fullName;

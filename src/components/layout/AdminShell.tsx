@@ -3,7 +3,6 @@
 import { useState } from "react";
 import NextLink from "next/link";
 import { usePathname } from "next/navigation";
-import Avatar from "@mui/material/Avatar";
 import Badge from "@mui/material/Badge";
 import Box from "@mui/material/Box";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
@@ -17,6 +16,7 @@ import ListItemText from "@mui/material/ListItemText";
 import ListSubheader from "@mui/material/ListSubheader";
 import Typography from "@mui/material/Typography";
 import type { SvgIconComponent } from "@mui/icons-material";
+import AccountCircleOutlined from "@mui/icons-material/AccountCircleOutlined";
 import AssessmentOutlined from "@mui/icons-material/AssessmentOutlined";
 import AssignmentTurnedInOutlined from "@mui/icons-material/AssignmentTurnedInOutlined";
 import ChevronRight from "@mui/icons-material/ChevronRight";
@@ -35,6 +35,7 @@ import VideocamOutlined from "@mui/icons-material/VideocamOutlined";
 import ViewListOutlined from "@mui/icons-material/ViewListOutlined";
 import { logoutAction } from "@/app/(auth)/actions";
 import BrandLogo from "@/components/brand/BrandLogo";
+import UserMenu from "@/components/layout/UserMenu";
 import type { Viewer } from "@/lib/auth/session";
 import { brand } from "@/theme/tokens";
 
@@ -56,6 +57,8 @@ const managementNav: NavItem[] = [
   { label: "Reports", href: "/admin/reports", icon: AssessmentOutlined },
   { label: "Settings", href: "/admin/settings", icon: SettingsOutlined },
 ];
+
+const ACCOUNT_NAV: NavItem = { label: "My Account", href: "/admin/account", icon: AccountCircleOutlined };
 
 const DRAWER_WIDTH = 248;
 
@@ -93,7 +96,7 @@ export default function AdminShell({ viewer, pendingSubmissions = 0, children }:
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const close = () => setMobileOpen(false);
-  const current = [...contentNav, ...managementNav].find((item) => isActive(pathname, item.href));
+  const current = [...contentNav, ...managementNav, ACCOUNT_NAV].find((item) => isActive(pathname, item.href));
 
   const subheader = (label: string) => (
     <ListSubheader
@@ -201,13 +204,13 @@ export default function AdminShell({ viewer, pendingSubmissions = 0, children }:
           <IconButton size="small" aria-label="Settings" component={NextLink} href="/admin/settings">
             <SettingsOutlined fontSize="small" />
           </IconButton>
-          <Avatar sx={{ width: 30, height: 30, ml: 0.5, bgcolor: "primary.main", fontSize: 13 }}>
-            {viewer.displayName.charAt(0).toUpperCase()}
-          </Avatar>
-          <Box sx={{ display: { xs: "none", sm: "block" }, lineHeight: 1.1 }}>
-            <Typography sx={{ fontSize: 13, fontWeight: 600 }}>{viewer.displayName}</Typography>
-            <Typography sx={{ fontSize: 11, color: "text.secondary" }}>Educator</Typography>
-          </Box>
+          <UserMenu
+            viewer={viewer}
+            items={[
+              { label: "My Account", href: "/admin/account", icon: <AccountCircleOutlined /> },
+              { label: "View Syllabus Board", href: "/learn", icon: <ViewListOutlined /> },
+            ]}
+          />
         </Box>
         <Box component="main" sx={{ flex: 1, p: { xs: 2, md: 3 } }}>
           {children}

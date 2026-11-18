@@ -15,7 +15,6 @@ const linksByRole: Record<"student" | "admin" | "chairman", TopNavLink[]> = {
     { label: "Content Studio", href: "/admin" },
     { label: "Syllabus Board", href: "/learn" },
     { label: "Announcements", href: "/announcements" },
-    { label: "Profile", href: "/profile" },
   ],
   chairman: [
     { label: "Oversight", href: "/oversight" },

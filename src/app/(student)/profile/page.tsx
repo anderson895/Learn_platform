@@ -59,7 +59,7 @@ async function ProfileContent() {
           ))}
         </Box>
         <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 1.5 }}>
-          Username, email and role can only be changed by the administrator.
+          Your username, email and role can be changed by your instructor (administrator).
         </Typography>
       </Card>
 

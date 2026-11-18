@@ -4,11 +4,11 @@ import { refresh } from "next/cache";
 import type { AccountStatus } from "@/domain/users/User";
 import type { FormState } from "@/lib/forms";
 import { requireUser } from "@/lib/auth/session";
-import { fieldErrorsOf, formValues, profileSchema, studentDetailsSchema } from "@/lib/validation/student";
+import { fieldErrorsOf, formValues, studentDetailsSchema } from "@/lib/validation/student";
 import { StudentAccountService } from "@/services/StudentAccountService";
 
 const CREATE_FIELDS = ["firstName", "middleName", "lastName", "studentNumber", "course", "yearLevel", "username", "email"] as const;
-const UPDATE_FIELDS = ["firstName", "middleName", "lastName", "studentNumber", "course", "yearLevel"] as const;
+const UPDATE_FIELDS = ["firstName", "middleName", "lastName", "studentNumber", "course", "yearLevel", "username", "email"] as const;
 
 export type ActionResult = { ok: boolean; message?: string; tempPassword?: string };
 
@@ -37,7 +37,7 @@ export async function updateStudentAction(uid: string, prev: FormState, formData
   const attempt = (prev.attempt ?? 0) + 1;
   const admin = await requireUser(["admin"]);
   const values = formValues(formData, UPDATE_FIELDS);
-  const parsed = profileSchema.extend({ studentNumber: studentDetailsSchema.shape.studentNumber }).safeParse(values);
+  const parsed = studentDetailsSchema.safeParse(values);
   if (!parsed.success) return { status: "error", fieldErrors: fieldErrorsOf(parsed.error), values, attempt };
   try {
     const result = await new StudentAccountService().update(uid, parsed.data, admin.id);

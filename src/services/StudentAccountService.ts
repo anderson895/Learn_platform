@@ -6,6 +6,7 @@ import type { ProfileInput, StudentDetailsInput } from "@/lib/validation/student
 import { AccountRepository } from "@/repositories/AccountRepository";
 import { AuditLogRepository } from "@/repositories/AuditLogRepository";
 import { StudentProfileRepository } from "@/repositories/StudentProfileRepository";
+import { AccountService, type LoginDetails } from "./AccountService";
 import { AuthService, type ServiceResult } from "./AuthService";
 
 /** Isang row ng Student Accounts table. Plain data lang para maipasa sa Client Component. */
@@ -31,6 +32,7 @@ export class StudentAccountService {
     private readonly students = new StudentProfileRepository(),
     private readonly logs = new AuditLogRepository(),
     private readonly auth = new AuthService(),
+    private readonly accountDetails = new AccountService(),
   ) {}
 
   async list(): Promise<StudentRow[]> {
@@ -70,13 +72,16 @@ export class StudentAccountService {
     return { ok: true, data: { uid: result.data, tempPassword } };
   }
 
-  async update(uid: string, input: ProfileInput & { studentNumber: string }, actorUid: string): Promise<ServiceResult> {
+  async update(uid: string, input: ProfileInput & LoginDetails & { studentNumber: string }, actorUid: string): Promise<ServiceResult> {
     const current = await this.students.findById(uid);
     if (!current) return { ok: false, error: "Student not found." };
     if (current.studentNumber !== input.studentNumber && (await this.students.isStudentNumberTaken(input.studentNumber))) {
       return { ok: false, fieldErrors: { studentNumber: "This student number is already registered." } };
     }
-    await this.students.update(uid, { ...input });
+    const { username, email, ...profile } = input;
+    const login = await this.accountDetails.changeLoginDetails(uid, { username, email }, actorUid);
+    if (!login.ok) return login;
+    await this.students.update(uid, { ...profile });
     await getAdminAuth().updateUser(uid, { displayName: `${input.firstName} ${input.lastName}` });
     await this.log(actorUid, "update", `students/${uid}`);
     return { ok: true };

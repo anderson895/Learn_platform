@@ -42,6 +42,7 @@ Nasa tabi ng code ang mga test (`*.test.ts`). Hindi tumatawag ang mga ito sa tot
 | `lib/validation/validation.test.ts` | Validation ng registration, password, lesson, notes, quiz at grade |
 | `lib/password.test.ts` | Temporary password generator |
 | `services/AssessmentService.test.ts` | Quiz timer at grading, pagtago ng sagot, admin preview, Code Sequencing, pag-grade (fake repositories) |
+| `services/AccountService.test.ts` | My Account: password bago magpalit ng email, bawal ang kaparehong username/email |
 | `services/ProgressService.test.ts` | Pinakamataas na score, unlock, Mark as done, Progress Board (fake Firestore) |
 
 Test data factories: `src/test/factories.ts`. Config: `vitest.config.mts`.
@@ -64,7 +65,7 @@ Isang beses lang ipapakita ang password, kaya i-save ito agad.
 
 | Role | Mga page |
 |---|---|
-| Admin (Educator) | Dashboard, AV Studio, Notes, Syllabus Builder, Class Roster, Student Accounts, Assessments, Submissions, Reports, Settings |
+| Admin (Educator) | Dashboard, AV Studio, Notes, Syllabus Builder, Class Roster, Student Accounts, Assessments, Submissions, Reports, Settings, My Account |
 | Student | Syllabus Board (`/learn`), Workspace (`/learn/[id]`), Syntax Reviewer, Quiz, Achievements, Announcements, Profile |
 | Chairman | Oversight (read-only na reports) |
 

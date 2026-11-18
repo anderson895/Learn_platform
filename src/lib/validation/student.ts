@@ -39,6 +39,15 @@ export const studentDetailsSchema = profileSchema.extend({
   email: z.string().trim().toLowerCase().pipe(z.email("Enter a valid email address.")),
 });
 
+/** Username at email ng account (Table 11). */
+export const loginDetailsSchema = studentDetailsSchema.pick({ username: true, email: true });
+
+/** My Account ng admin/chairman: display name, username at email. Kailangan ang kasalukuyang password kapag papalitan ang email. */
+export const accountDetailsSchema = loginDetailsSchema.extend({
+  displayName: name("Name").max(80, "Name must be at most 80 characters."),
+  currentPassword: z.string(),
+});
+
 /** Student Registration (sariling pag-register ng student). */
 export const registrationSchema = studentDetailsSchema
   .extend({ password: passwordSchema, confirmPassword: z.string() })
