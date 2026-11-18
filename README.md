@@ -27,6 +27,17 @@ npm run lint
 npm run build
 ```
 
+## Admin account
+
+```bash
+npm run create-admin                                   # admin@learnplatform.local + random password
+npm run create-admin -- --email ikaw@email.com --name "Pangalan"
+npm run create-admin -- --reset-password               # bagong password sa umiiral na admin
+npm run set-role -- <email> admin|chairman|student     # palitan ang role ng umiiral na user
+```
+
+Isang beses lang ipapakita ang password, kaya i-save ito agad.
+
 ## Folder structure
 
 ```

@@ -1,5 +1,5 @@
 import "server-only";
-import type { CollectionReference, DocumentData, UpdateData } from "firebase-admin/firestore";
+import type { CollectionReference, DocumentData, UpdateData, WriteBatch } from "firebase-admin/firestore";
 import { getAdminDb } from "@/lib/firebase/admin";
 
 /**
@@ -18,6 +18,11 @@ export abstract class BaseRepository<T, D extends DocumentData> {
     return getAdminDb().collection(this.collectionName) as CollectionReference<D>;
   }
 
+  /** Bagong auto-generated na document ID (hindi pa nasusulat). */
+  newId(): string {
+    return this.collection.doc().id;
+  }
+
   async findById(id: string): Promise<T | null> {
     const snap = await this.collection.doc(id).get();
     const data = snap.data();
@@ -34,6 +39,17 @@ export abstract class BaseRepository<T, D extends DocumentData> {
     return snap.docs.map((doc) => this.toEntity(doc.id, doc.data()));
   }
 
+  async findOneWhere(field: string, value: unknown): Promise<T | null> {
+    const snap = await this.collection.where(field, "==", value).limit(1).get();
+    const doc = snap.docs[0];
+    return doc ? this.toEntity(doc.id, doc.data()) : null;
+  }
+
+  async existsWhere(field: string, value: unknown): Promise<boolean> {
+    const snap = await this.collection.where(field, "==", value).limit(1).get();
+    return !snap.empty;
+  }
+
   /** Gumagawa ng document. Kapag walang `id`, auto-generated ito ng Firestore. */
   async create(entity: T, id?: string): Promise<string> {
     const data = this.toDocument(entity);
@@ -43,6 +59,11 @@ export abstract class BaseRepository<T, D extends DocumentData> {
     }
     const ref = await this.collection.add(data);
     return ref.id;
+  }
+
+  /** Idinadagdag ang pagsulat sa isang batch, para sabay-sabay (atomic) na ma-commit kasama ng iba. */
+  addToBatch(batch: WriteBatch, entity: T, id: string): void {
+    batch.set(this.collection.doc(id), this.toDocument(entity));
   }
 
   async update(id: string, changes: UpdateData<D>): Promise<void> {

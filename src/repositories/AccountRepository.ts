@@ -24,6 +24,14 @@ export class AccountRepository extends BaseRepository<User, AccountDocument> {
     });
   }
 
+  findByUsername(username: string): Promise<User | null> {
+    return this.findOneWhere("username", username.trim().toLowerCase());
+  }
+
+  isUsernameTaken(username: string): Promise<boolean> {
+    return this.existsWhere("username", username.trim().toLowerCase());
+  }
+
   protected toDocument(user: User): AccountDocument {
     const props = user.toAccountProps();
     return {
