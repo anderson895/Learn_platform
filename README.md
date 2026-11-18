@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Learn Platform
 
-## Getting Started
+**Interactive E-Learning System for Computer Programming 1** (Java), para sa College of Science, UEP Main Campus.
 
-First, run the development server:
+Plan: `../DEVELOPMENT_PLAN.md` · Checklist: `../CHECKLIST.md`
+
+## Stack
+
+- Next.js 16 (App Router, TypeScript)
+- Material UI 9
+- Firebase Authentication + Firestore (Admin SDK sa server)
+- Cloudinary
+- OOP (`src/domain`, `src/repositories`, `src/services`)
+
+## Pagpapatakbo
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+cp .env.example .env.local   # punan ang mga value
+npm run dev                  # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Iba pang command:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run lint
+npm run build
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Folder structure
 
-## Learn More
+```
+src/
+  app/            # mga page at route (admin), (student), (chairman), (auth)
+  components/     # layout shells, login, mga UI component
+  domain/         # OOP classes (User → Student/Admin/Chairman, ...), walang Firebase dito
+  repositories/   # Firestore access (BaseRepository<T, D>)
+  lib/            # Firebase client/admin at Cloudinary
+  theme/          # MUI theme at mga kulay (tokens.ts)
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Mahahalagang patakaran
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Hindi dapat i-commit ang `.env.local`.
+- Ang `CLOUDINARY_API_SECRET` at `FIREBASE_ADMIN_*` ay server lang, kaya walang `NEXT_PUBLIC_` ang mga ito.
+- Lahat ng Firestore read/write ay dumadaan sa server (`src/repositories`). Sarado ang `firestore.rules` sa browser.
+- Ang mga kulay at font na gagamitin sa Server Components ay i-import mula sa `@/theme/tokens`, hindi sa `@/theme/theme`.
+- Sa MUI 9, ang `fontSize`/`fontWeight` ng Typography at Link ay inilalagay sa `sx`, hindi bilang prop.

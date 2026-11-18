@@ -1,0 +1,12 @@
+rules_version = '2';
+
+// Lahat ng pagbasa at pagsulat sa Firestore ay dumadaan sa Next.js server gamit ang Firebase Admin SDK,
+// na hindi sakop ng mga rule na ito. Kaya sarado ang lahat ng direktang access mula sa browser.
+// Ang role-based access ay sinusuri sa server (services/ at ang User.canAccess()).
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
