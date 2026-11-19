@@ -1,4 +1,5 @@
 import "server-only";
+import { CP1_MODULES, moduleSummary } from "@/domain/content/Cp1Syllabus";
 import { DEFAULT_SUBJECT, DEFAULT_SYLLABUS, type CourseDTO, type SubjectProps, type SyllabusProps } from "@/domain/content/Course";
 import { Lesson, type LessonProps, type MediaFile, type PublishStatus } from "@/domain/content/Lesson";
 import { Note } from "@/domain/content/Note";
@@ -11,19 +12,6 @@ import { CodeSnippetRepository, NoteRepository } from "@/repositories/NoteReposi
 
 export const DEFAULT_THRESHOLD = 75;
 
-/** Placeholder na Java syllabus (Section 11 ng plan). Palitan ng totoong CP1 syllabus ng UEP. */
-export const SAMPLE_LESSONS: { title: string; topics: string[] }[] = [
-  { title: "Introduction to Programming", topics: ["algorithms", "flowcharts", "pseudocode", "first Java program"] },
-  { title: "Variables, Data Types & Constants", topics: ["int", "double", "char", "boolean", "String", "final"] },
-  { title: "Operators & Input/Output", topics: ["arithmetic", "relational", "logical", "Scanner", "System.out"] },
-  { title: "Control Structures", topics: ["if", "else if", "else", "switch"] },
-  { title: "Iteration — Loops", topics: ["for", "while", "do-while", "break", "continue"] },
-  { title: "Methods & Modular Programming", topics: ["parameters", "return types", "scope", "overloading"] },
-  { title: "Arrays — 1D and 2D", topics: ["declaration", "traversal", "sorting"] },
-  { title: "Strings & String Manipulation", topics: ["length()", "substring()", "equals()", "StringBuilder"] },
-  { title: "Introduction to Classes & Objects", topics: ["class", "object", "constructor", "fields", "methods"] },
-  { title: "Exception Handling & Final Project", topics: ["try", "catch", "project delivery"] },
-];
 
 export type LessonInput = {
   lessonTitle: string;
@@ -177,16 +165,16 @@ export class ContentService {
     await this.log(actorUid, "delete", `lessons/${id}`);
   }
 
-  /** Nilalagyan ng 10 sample na Java chapter ang bakanteng syllabus. */
+  /** Nilalagyan ang bakanteng syllabus ng 12 module ng UEP Computer Programming 1 syllabus (draft lahat). */
   async seedSampleLessons(instructorName: string, actorUid: string, passingThreshold = DEFAULT_THRESHOLD): Promise<number> {
     if ((await this.listLessons()).length > 0) return 0;
-    for (const sample of SAMPLE_LESSONS) {
+    for (const item of CP1_MODULES) {
       await this.saveLesson(
         null,
         {
-          lessonTitle: sample.title,
-          topics: sample.topics,
-          lessonContent: "",
+          lessonTitle: item.title,
+          topics: item.topics,
+          lessonContent: moduleSummary(item),
           passingThreshold,
           status: "draft",
           instructorName,
@@ -194,7 +182,7 @@ export class ContentService {
         actorUid,
       );
     }
-    return SAMPLE_LESSONS.length;
+    return CP1_MODULES.length;
   }
 
   // ── Notes Repository ──────────────────────────────────────────────────────

@@ -39,7 +39,7 @@ Nasa tabi ng code ang mga test (`*.test.ts`). Hindi tumatawag ang mga ito sa tot
 | `domain/content/content.test.ts` | Lesson codes (Ch./VID/QZ), media helpers |
 | `domain/assessment/assessment.test.ts` | Code Sequencing, Quiz scoring, Coding Exercise |
 | `domain/progress/LessonProgress.test.ts` | Threshold at pag-unlock ng mga lesson (ProgressPolicy) |
-| `lib/validation/validation.test.ts` | Validation ng registration, password, lesson, notes, quiz at grade |
+| `lib/validation/validation.test.ts` | Validation ng registration, password, lesson, notes, quiz, grade, PIECES questionnaire at ng UEP CP1 syllabus data |
 | `lib/password.test.ts` | Temporary password generator |
 | `services/AssessmentService.test.ts` | Quiz timer at grading, pagtago ng sagot, admin preview, Code Sequencing, pag-grade (fake repositories) |
 | `services/AccountService.test.ts` | My Account: password bago magpalit ng email, bawal ang kaparehong username/email |
@@ -75,6 +75,13 @@ node scripts/create-admin.mjs --email ikaw@email.com --name "Pangalan"
 node scripts/create-admin.mjs --password "BagongPassword123"   # palitan ang password ng umiiral na admin
 node scripts/create-admin.mjs --reset-password                 # bagong random password
 node scripts/set-role.mjs <email> admin|chairman|student       # palitan ang role ng umiiral na user
+```
+
+**UEP CP1 syllabus.** Nasa `src/domain/content/Cp1Syllabus.ts` ang 12 module (topics, learning outcomes, weeks at hours) at ang course description. Sa bakanteng syllabus, gamitin ang **Load UEP CP1 syllabus** sa Syllabus Builder. Para palitan ang lumang 10 sample na lesson nang hindi nawawala ang notes, activities, quizzes at progress:
+
+```bash
+node --experimental-strip-types scripts/apply-cp1-syllabus.mjs           # dry run: ipinapakita ang plano
+node --experimental-strip-types scripts/apply-cp1-syllabus.mjs --apply   # backup sa scripts/.backups/, saka isusulat
 ```
 
 Isang beses lang ipapakita ang password, kaya i-save ito agad.

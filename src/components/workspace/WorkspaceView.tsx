@@ -223,7 +223,7 @@ export default function WorkspaceView({ lesson, notes, assessments, exerciseSubm
 
           {tab === "notes" && (
             <Box sx={{ bgcolor: "background.paper", border: 1, borderColor: "divider", borderRadius: "12px", p: 2.5 }}>
-              {lesson.summary && <Typography sx={{ fontSize: 14, color: "text.secondary", mb: 2 }}>{lesson.summary}</Typography>}
+              {lesson.summary && <Typography sx={{ fontSize: 14, color: "text.secondary", mb: 2, whiteSpace: "pre-line" }}>{lesson.summary}</Typography>}
               {notes ? <Markdown>{notes}</Markdown> : <Typography sx={{ color: "text.secondary", fontSize: 14 }}>No notes have been published for this lesson yet.</Typography>}
             </Box>
           )}

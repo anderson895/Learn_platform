@@ -1,3 +1,5 @@
+import { CP1_COURSE } from "./Cp1Syllabus";
+
 /** Subject (Table 4) at Syllabus (Table 5). Iisa ang subject at syllabus ng sistema: Computer Programming 1. */
 export interface SubjectProps {
   subjectCode: string;
@@ -24,9 +26,5 @@ export const DEFAULT_SUBJECT: SubjectProps = {
   academicYear: "2026-2027",
 };
 
-export const DEFAULT_SYLLABUS: Omit<SyllabusProps, "subjectId" | "createdAt"> = {
-  courseDescription:
-    "An introduction to computer programming using Java: problem solving, algorithms, data types, control structures, methods, arrays and an introduction to objects.",
-  courseObjectives: "Write, trace and debug simple Java programs that solve well-defined problems.",
-  learningOutcomes: "Design algorithms and implement them in Java using correct syntax and good programming style.",
-};
+/** Galing sa UEP Computer Programming 1 syllabus (tingnan ang `Cp1Syllabus.ts`). */
+export const DEFAULT_SYLLABUS: Omit<SyllabusProps, "subjectId" | "createdAt"> = { ...CP1_COURSE };

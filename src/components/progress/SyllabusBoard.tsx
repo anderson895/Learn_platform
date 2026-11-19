@@ -1,11 +1,17 @@
 "use client";
 
+import { useState } from "react";
 import NextLink from "next/link";
 import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
+import Collapse from "@mui/material/Collapse";
 import LinearProgress from "@mui/material/LinearProgress";
 import Typography from "@mui/material/Typography";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
+import InfoOutlined from "@mui/icons-material/InfoOutlined";
 import LockOutlined from "@mui/icons-material/LockOutlined";
 import MenuBookOutlined from "@mui/icons-material/MenuBookOutlined";
 import MiniChip from "@/components/ui/MiniChip";
@@ -15,15 +21,67 @@ import { monoFont } from "@/theme/tokens";
 
 const COLUMNS = "56px 80px minmax(180px,1.4fr) minmax(160px,1.2fr) 90px 90px 140px";
 
+export type CourseInfo = { subjectCode: string; subjectName: string; yearLevel: string; academicYear: string; courseDescription: string; courseObjectives: string; learningOutcomes: string };
+
+/** Course description, objectives at learning outcomes mula sa Syllabus Builder (Table 5). */
+function CourseInfoCard({ course }: { course: CourseInfo }) {
+  const [open, setOpen] = useState(false);
+  const sections = [
+    { label: "Course description", text: course.courseDescription },
+    { label: "Course objectives", text: course.courseObjectives },
+    { label: "Learning outcomes", text: course.learningOutcomes },
+  ].filter((section) => section.text.trim());
+  if (sections.length === 0) return null;
+  return (
+    <Card>
+      <Button
+        fullWidth
+        color="inherit"
+        onClick={() => setOpen((value) => !value)}
+        aria-expanded={open}
+        startIcon={<InfoOutlined sx={{ color: "primary.main" }} />}
+        endIcon={open ? <ExpandLess /> : <ExpandMore />}
+        sx={{ justifyContent: "flex-start", px: 2, py: 1.25, textTransform: "none", "& .MuiButton-endIcon": { ml: "auto" } }}
+      >
+        <Box component="span" sx={{ fontWeight: 600 }}>
+          Course information
+        </Box>
+        <Box component="span" sx={{ ml: 1, fontSize: 12.5, color: "text.secondary", fontWeight: 400 }}>
+          {course.subjectCode} · {course.yearLevel} · SY {course.academicYear}
+        </Box>
+      </Button>
+      <Collapse in={open}>
+        {/* Description at objectives sa kaliwa; ang mahabang learning outcomes sa kanan. */}
+        <Box sx={{ px: 2.5, pb: 2.5, display: "grid", gap: 2, gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" }, alignItems: "start" }}>
+          {[sections.filter((section) => section.label !== "Learning outcomes"), sections.filter((section) => section.label === "Learning outcomes")]
+            .filter((column) => column.length > 0)
+            .map((column) => (
+              <Box key={column[0].label} sx={{ display: "grid", gap: 2 }}>
+                {column.map((section) => (
+                  <Box key={section.label}>
+                    <Typography variant="overline" sx={{ fontSize: 10.5, color: "text.secondary", fontWeight: 600 }}>
+                      {section.label}
+                    </Typography>
+                    <Typography sx={{ fontSize: 13.5, whiteSpace: "pre-line" }}>{section.text}</Typography>
+                  </Box>
+                ))}
+              </Box>
+            ))}
+        </Box>
+      </Collapse>
+    </Card>
+  );
+}
+
 /** Syllabus Progress Board (Fig. 15): color-coded at read-only. */
-export default function SyllabusBoard({ board, locked, preview }: { board: Board; locked: boolean; preview: boolean }) {
+export default function SyllabusBoard({ board, course, locked, preview }: { board: Board; course: CourseInfo; locked: boolean; preview: boolean }) {
   const legend = (["not_started", "in_progress", "completed"] as const).map((key) => statusStyles[key]);
   return (
     <Box sx={{ display: "grid", gap: 2 }}>
       <Box sx={{ display: "flex", alignItems: "center", gap: 2, flexWrap: "wrap" }}>
         <MenuBookOutlined sx={{ color: "text.secondary" }} />
         <Box sx={{ flex: 1, minWidth: 200 }}>
-          <Typography sx={{ fontWeight: 700, fontSize: 17 }}>Computer Programming 1</Typography>
+          <Typography sx={{ fontWeight: 700, fontSize: 17 }}>{course.subjectName}</Typography>
           <Typography sx={{ fontSize: 12, color: "text.secondary" }}>Syllabus Progress Board · {board.total} modules</Typography>
         </Box>
         {legend.map((item) => (
@@ -38,6 +96,8 @@ export default function SyllabusBoard({ board, locked, preview }: { board: Board
           </Typography>
         </Box>
       </Box>
+
+      <CourseInfoCard course={course} />
 
       {locked && <Alert severity="warning">That lesson is still locked. Pass the quiz of the previous lesson to unlock it.</Alert>}
       {preview && <Alert severity="info">Preview: this is how the board looks to a new student. As an educator you can open every lesson.</Alert>}

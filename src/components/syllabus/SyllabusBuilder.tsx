@@ -238,7 +238,7 @@ export default function SyllabusBuilder({
               {course.subjectCode} · {course.yearLevel} · AY {course.academicYear}
             </Typography>
             <Typography variant="h6">{course.subjectName}</Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5, maxWidth: 820 }}>
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5, maxWidth: 820, whiteSpace: "pre-line" }}>
               {course.courseDescription || "No course description yet."}
             </Typography>
           </Box>
@@ -266,10 +266,10 @@ export default function SyllabusBuilder({
         {items.length === 0 ? (
           <Box sx={{ py: 5, textAlign: "center" }}>
             <Typography color="text.secondary" sx={{ mb: 2 }}>
-              No modules yet. Add your first module, or start from the sample Java syllabus (10 chapters).
+              No modules yet. Add your first module, or load the UEP Computer Programming 1 syllabus (12 modules, saved as drafts).
             </Typography>
             <Button variant="outlined" disabled={isPending} onClick={() => act(seedSampleLessonsAction)}>
-              {isPending ? "Loading..." : "Load sample Java syllabus"}
+              {isPending ? "Loading..." : "Load UEP CP1 syllabus"}
             </Button>
           </Box>
         ) : (

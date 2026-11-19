@@ -1,0 +1,366 @@
+/**
+ * Ang Computer Programming 1 syllabus ng UEP College of Science (BSIT, 1st Semester).
+ * Mula sa "Course Outline and Timeframe" at "Learning Plan" ng opisyal na syllabus.
+ * Ang Midterm (Week 9) at Final Examination (Week 18) ay hindi module; nakasulat ito sa course description.
+ */
+
+export type SyllabusModule = {
+  title: string;
+  /** Hal. "Week 1" o "Weeks 5–6". */
+  weeks: string;
+  hours: number;
+  /** Maiikling pangalan ng topics (hanggang 12, tig-40 character, walang kuwit). */
+  topics: string[];
+  /** "At the end of the topic, the students must be able to:" */
+  outcomes: string[];
+  /** Dagdag na impormasyon sa summary (hal. grading system sa orientation). */
+  notes?: string[];
+};
+
+export const CP1_MODULES: SyllabusModule[] = [
+  {
+    title: "Course Orientation",
+    weeks: "Week 1",
+    hours: 2,
+    topics: [
+      "VMGO",
+      "college goals",
+      "program outcomes",
+      "course outcomes",
+      "course outline",
+      "grading system",
+      "course requirements",
+      "gender awareness and development",
+      "students with special needs",
+      "academic integrity",
+      "disaster and risk preparedness",
+    ],
+    outcomes: [
+      "Explain and interpret the University vision and mission, College goals and program objectives.",
+      "Relate the overall course outline, grading system and requirements.",
+    ],
+    notes: [
+      "Grading: Major Exam 35%, Quizzes 20%, Laboratory 25%, Recitation/Assignment 15%, Attendance 5%. Passing: 3.0 (75%).",
+      "Requirements: a set of laboratory exercises completed individually, and a final programming application in Java that showcases the course learning outcomes.",
+    ],
+  },
+  {
+    title: "Introduction to Programming",
+    weeks: "Week 1",
+    hours: 5,
+    topics: [
+      "computer systems",
+      "simple program logic",
+      "program development cycle",
+      "pseudocode",
+      "flowchart symbols",
+      "sentinel values",
+      "programming environments",
+      "user environments",
+      "evolution of programming models",
+    ],
+    outcomes: [
+      "Explain computer systems.",
+      "Create simple program logic.",
+      "Enumerate the steps involved in the program development cycle.",
+      "Develop pseudocode statements and flowchart symbols.",
+      "Use a sentinel value to end a program.",
+      "Describe the different programming and user environments.",
+      "Understand the evolution of programming models.",
+    ],
+  },
+  {
+    title: "Elements of Programming",
+    weeks: "Week 2",
+    hours: 5,
+    topics: ["variables", "constants", "arithmetic operations", "good program design", "programming terminology", "procedural vs object-oriented"],
+    outcomes: [
+      "Declare and use variables and constants.",
+      "Perform arithmetic operations.",
+      "Enumerate the features of good program design.",
+      "Describe programming terminology.",
+      "Compare procedural and object-oriented programming concepts.",
+    ],
+  },
+  {
+    title: "Introduction to Java Programs",
+    weeks: "Week 3",
+    hours: 5,
+    topics: [
+      "features of Java",
+      "Java program types",
+      "console output",
+      "the first class",
+      "the main() method",
+      "syntax errors",
+      "logic errors",
+      "modifying a compiled class",
+      "comments",
+      "GUI output",
+      "finding help",
+    ],
+    outcomes: [
+      "Describe the features of the Java programming language.",
+      "Analyze a Java application that produces console output.",
+      "Compile a Java class and correct syntax errors.",
+      "Run a Java application and correct logic errors.",
+      "Add comments to a Java class.",
+      "Create a Java application that produces GUI output.",
+      "Find help.",
+    ],
+  },
+  {
+    title: "Using Data",
+    weeks: "Week 4",
+    hours: 5,
+    topics: [
+      "constants and variables",
+      "string concatenation",
+      "primitive data types",
+      "Scanner input",
+      "JOptionPane input",
+      "input dialog boxes",
+      "confirm dialog boxes",
+      "arithmetic statements",
+      "type conversion",
+    ],
+    outcomes: [
+      "Declare and use constants and variables.",
+      "Use integer, boolean, floating-point and char data types.",
+      "Use the Scanner class to accept keyboard input.",
+      "Use the JOptionPane class to accept GUI input.",
+      "Perform arithmetic.",
+      "Understand type conversion.",
+    ],
+  },
+  {
+    title: "Using Methods, Classes, and Objects",
+    weeks: "Weeks 5–6",
+    hours: 10,
+    topics: [
+      "method calls and placement",
+      "single parameter",
+      "multiple parameters",
+      "return values",
+      "chaining method calls",
+      "classes and objects",
+      "instance methods",
+      "declaring objects",
+      "data hiding",
+      "constructors",
+      "classes as data types",
+    ],
+    outcomes: [
+      "Learn about method calls and placement.",
+      "Identify the parts of a method.",
+      "Add parameters to methods.",
+      "Create methods that return values.",
+      "Learn about classes and objects.",
+      "Create a class.",
+      "Create instance methods in a class.",
+      "Declare objects and use their methods.",
+      "Create constructors.",
+      "Appreciate classes as data types.",
+    ],
+  },
+  {
+    title: "More Object Concepts",
+    weeks: "Weeks 7–8",
+    hours: 10,
+    topics: [
+      "blocks and scope",
+      "method overloading",
+      "automatic type promotion",
+      "ambiguity",
+      "constructors with parameters",
+      "overloading constructors",
+      "the this reference",
+      "static fields",
+      "prewritten constants and methods",
+      "importing classes",
+      "composition",
+      "nested classes",
+    ],
+    outcomes: [
+      "Understand blocks and scope.",
+      "Overload a method.",
+      "Avoid ambiguity.",
+      "Create and call constructors with parameters.",
+      "Use the this reference.",
+      "Use static fields.",
+      "Use automatically imported, prewritten constants and methods.",
+      "Use composition and nest classes.",
+    ],
+  },
+  {
+    title: "Making Decisions",
+    weeks: "Week 10",
+    hours: 5,
+    topics: [
+      "decision-making logic",
+      "if and if...else",
+      "multiple statements in if",
+      "nested if statements",
+      "AND and OR operators",
+      "accurate and efficient decisions",
+      "switch statement",
+      "conditional operator",
+      "NOT operator",
+      "operator precedence",
+      "decisions in instance methods",
+    ],
+    outcomes: [
+      "Plan decision-making logic.",
+      "Make decisions with the if and if...else statements.",
+      "Use multiple statements in if and if...else clauses.",
+      "Nest if and if...else statements.",
+      "Use AND and OR operators.",
+      "Make accurate and efficient decisions.",
+      "Use the switch statement.",
+      "Use the conditional and NOT operators.",
+      "Add decisions and constructors to instance methods.",
+    ],
+  },
+  {
+    title: "Looping",
+    weeks: "Weeks 11–12",
+    hours: 10,
+    topics: [
+      "loop structure",
+      "while loops",
+      "definite while loops",
+      "loop control variables",
+      "shortcut arithmetic operators",
+      "for loops",
+      "do...while loops",
+      "nested loops",
+      "short-circuit evaluation",
+      "loop fusion",
+      "prefix vs postfix increment",
+    ],
+    outcomes: [
+      "Learn about the loop structure.",
+      "Create while loops.",
+      "Use shortcut arithmetic operators.",
+      "Create for loops.",
+      "Create do...while loops.",
+      "Nest loops.",
+      "Improve loop performance.",
+    ],
+  },
+  {
+    title: "Characters, Strings, and the StringBuilder",
+    weeks: "Weeks 13–14",
+    hours: 10,
+    topics: [
+      "string data problems",
+      "Character class methods",
+      "declaring String objects",
+      "comparing String values",
+      "empty and null Strings",
+      "other String methods",
+      "StringBuilder",
+      "StringBuffer",
+    ],
+    outcomes: [
+      "Identify string data problems.",
+      "Use Character class methods.",
+      "Declare and compare String objects.",
+      "Use other String methods.",
+      "Use the StringBuilder and StringBuffer classes.",
+    ],
+  },
+  {
+    title: "Arrays",
+    weeks: "Weeks 15–16",
+    hours: 10,
+    topics: [
+      "declaring and initializing arrays",
+      "variable subscripts",
+      "arrays of objects",
+      "enhanced for loop",
+      "arrays of Strings",
+      "searching an array",
+      "parallel arrays",
+      "range matches",
+      "passing and returning arrays",
+    ],
+    outcomes: [
+      "Declare arrays.",
+      "Initialize an array.",
+      "Use variable subscripts with an array.",
+      "Declare and use arrays of objects.",
+      "Search an array and use parallel arrays.",
+      "Pass arrays to and return arrays from methods.",
+    ],
+  },
+  {
+    title: "Advanced Array Concepts",
+    weeks: "Week 17",
+    hours: 5,
+    topics: [
+      "sorting array elements",
+      "bubble sort",
+      "sorting arrays of objects",
+      "insertion sort",
+      "two-dimensional arrays",
+      "multidimensional arrays",
+      "passing 2D arrays to methods",
+      "the Arrays class",
+      "the ArrayList class",
+      "enumerations",
+    ],
+    outcomes: [
+      "Sort array elements using the bubble sort algorithm.",
+      "Sort array elements using the insertion sort algorithm.",
+      "Use two-dimensional and other multidimensional arrays.",
+      "Use the Arrays class.",
+      "Use the ArrayList class.",
+      "Create enumerations.",
+    ],
+  },
+];
+
+/** Ang "Short summary" ng lesson: schedule at learning outcomes (ipinapakita sa Notes tab ng Workspace). */
+export function moduleSummary(item: SyllabusModule): string {
+  const lines = [
+    `${item.weeks} · ${item.hours} hours`,
+    "",
+    "At the end of this topic, you should be able to:",
+    ...item.outcomes.map((outcome) => `• ${outcome}`),
+  ];
+  if (item.notes?.length) lines.push("", ...item.notes);
+  return lines.join("\n");
+}
+
+/** Course description, objectives at learning outcomes (Table 5: syllabi). */
+export const CP1_COURSE = {
+  courseDescription: [
+    "The course covers the use of a general-purpose programming language (Java) to solve problems. The emphasis is to train students to design, implement, test, and debug programs intended to solve computing problems using fundamental programming constructs.",
+    "",
+    "Prerequisite: none · 5 hours every week for 18 weeks (90 hours) · Midterm examination: Week 9 · Final examination: Week 18.",
+  ].join("\n"),
+  courseObjectives: [
+    "Design, implement, test, and debug Java programs that solve computing problems using fundamental programming constructs.",
+    "Course requirements: a set of laboratory exercises completed individually, and a final programming application in Java that showcases the learning outcomes.",
+  ].join("\n"),
+  learningOutcomes: [
+    "Knowledge",
+    "1. Understand general programming concepts and formulate programming logic.",
+    "2. Analyze and simulate the result of an algorithm that may be implemented as a solution to a given problem.",
+    "3. Understand concepts used in the Java programming language.",
+    "4. Know how to modify and create simple Java programs and have the tools to create more complex examples.",
+    "",
+    "Skills",
+    "1. Apply the logic of programming into practice.",
+    "2. Create multithreaded programs in the Java language.",
+    "3. Use the Java language to create applications based on a given specification.",
+    "",
+    "Values",
+    "1. Recognize the wonder of technological advancement and its importance to society.",
+    "2. Develop patience and love for work.",
+    "3. Cultivate honesty by claiming credit only for the work he/she has done.",
+    "4. Build cooperation through group or team discussions or any course-related activities.",
+    "5. Appreciate the course itself.",
+  ].join("\n"),
+};

@@ -2,7 +2,9 @@ import { describe, expect, it } from "vitest";
 import { defaultQuestionnaire } from "@/domain/evaluation/Pieces";
 import { piecesAnswerSchema, questionnaireSchema } from "./evaluation";
 import { activitySchema, exerciseSchema, gradeSchema, quizSchema } from "./assessment";
-import { lessonSchema, noteSchema, snippetSchema } from "./content";
+import { CP1_COURSE, CP1_MODULES, moduleSummary } from "@/domain/content/Cp1Syllabus";
+import { DEFAULT_SUBJECT, DEFAULT_SYLLABUS } from "@/domain/content/Course";
+import { courseSchema, lessonSchema, noteSchema, snippetSchema } from "./content";
 import { changePasswordSchema, fieldErrorsOf, formValues, loginSchema, registrationSchema, studentDetailsSchema } from "./student";
 
 const validRegistration = {
@@ -192,5 +194,51 @@ describe("PIECES questionnaireSchema at piecesAnswerSchema", () => {
     expect(piecesAnswerSchema.safeParse({ answers: { per1: 0 } }).success).toBe(false);
     expect(piecesAnswerSchema.safeParse({ answers: { per1: 3.5 } }).success).toBe(false);
     expect(piecesAnswerSchema.parse({ answers: {} }).comment).toBe("");
+  });
+});
+
+describe("UEP CP1 syllabus (default ng Syllabus Builder)", () => {
+  it("12 module, sunod sa course outline ng syllabus", () => {
+    expect(CP1_MODULES.map((item) => item.title)).toEqual([
+      "Course Orientation",
+      "Introduction to Programming",
+      "Elements of Programming",
+      "Introduction to Java Programs",
+      "Using Data",
+      "Using Methods, Classes, and Objects",
+      "More Object Concepts",
+      "Making Decisions",
+      "Looping",
+      "Characters, Strings, and the StringBuilder",
+      "Arrays",
+      "Advanced Array Concepts",
+    ]);
+    // 82 oras ng mga module + 3 (midterm) + 5 (final exam) = 90 oras, gaya ng nasa syllabus
+    expect(CP1_MODULES.reduce((sum, item) => sum + item.hours, 0)).toBe(82);
+  });
+
+  it.each(CP1_MODULES.map((item) => [item.title, item] as const))("%s: pasado sa lessonSchema at hindi nasisira ang topics kapag in-edit", (_title, item) => {
+    const parsed = lessonSchema.parse({
+      lessonTitle: item.title,
+      topics: item.topics.join(", "),
+      lessonContent: moduleSummary(item),
+      passingThreshold: 75,
+      instructorName: "",
+      status: "draft",
+    });
+    expect(parsed.topics).toEqual(item.topics);
+    expect(item.outcomes.length).toBeGreaterThan(0);
+  });
+
+  it("course description, objectives at learning outcomes: pasado sa courseSchema", () => {
+    expect(courseSchema.safeParse({ ...DEFAULT_SUBJECT, ...CP1_COURSE }).success).toBe(true);
+    expect(DEFAULT_SYLLABUS.learningOutcomes).toContain("Knowledge");
+  });
+
+  it("summary: schedule, outcomes at (sa orientation) grading system", () => {
+    const summary = moduleSummary(CP1_MODULES[0]);
+    expect(summary.startsWith("Week 1 · 2 hours")).toBe(true);
+    expect(summary).toContain("• Relate the overall course outline, grading system and requirements.");
+    expect(summary).toContain("Major Exam 35%");
   });
 });
